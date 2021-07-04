@@ -4,22 +4,15 @@ from configparser import ConfigParser
 
 
 class MailParser:
-    # Read config file
-    config = ConfigParser()
-    config.read("./mailConf.ini")
-
-    # Configs for mail authorization
-    host = config['MailService']['host']
-    username = config['MailService']['username']
-    password = config['MailService']['password']
-
-    # Connect to mail host
-    mail = imaplib.IMAP4_SSL(host)
+    mail = ''
 
     # Log in Mail
-    def login(self):
-        self.mail.login(self.username, self.password)
-
+    def login(self, host, username, password):
+        # Connect to mail host
+        self.mail = imaplib.IMAP4_SSL(host)
+        self.mail.login(username, password)
+        
+        
     # Get video from last message
     def get_mail_attaches(self):
 
@@ -65,7 +58,6 @@ class MailParser:
         return photos, videos, music, docs
 
 
-
     # Log out from Mail
     def logout(self):
         self.mail.logout()
@@ -76,5 +68,3 @@ class MailParser:
 # eml.login()
 
 # photos, videos, music, docs = eml.get_mail_attaches()
-
-# eml.logout()

@@ -1,2 +1,7 @@
 # ZIP archives
 *.zip
+
+# Config files
+*.ini
+
+__pycache__/
