@@ -20,21 +20,21 @@ class MailParser:
     def login(self):
         self.mail.login(self.username, self.password)
 
-    # print(server)
-    # print(port)
-    # print(username)
-    # print(password)
-
     # Get video from last message
-    def get_msg_video(self):
+    def get_mail_attaches(self):
 
         # Check mail messages
         status, msgs = self.mail.select('INBOX')
         status, ids = self.mail.search(None, 'UNSEEN')
-        # print(ids)
+
+        photos = []
+        videos = []
+        music = []
+        docs = []
 
         # Last message
         if ids != [b'']:
+
             # print(ids)
             last_email_id = ids[0].split()[-1]
             status, msg_data = self.mail.fetch(last_email_id, '(RFC822)')
@@ -43,29 +43,38 @@ class MailParser:
 
             # With attachments
             if msg.is_multipart():
-                # print('multi')
                 for part in msg.walk():
-                    # print('part')
-                    # content_type = part.get_content_type()
                     filename = part.get_filename()
+                    content_type = part.get_content_maintype()
                     if filename:
-                        # print(filename)
-                        msg_video = part.get_payload(decode=True)
-                        return filename, msg_video
-                    
-        return '', b''
+                        # print(filename, '  ===  ', content_type)
+                        file = part.get_payload(decode=True)
+
+                        # File is image
+                        if (content_type == 'image'): photos.append(file)
+
+                        # File is video
+                        elif (content_type == 'video'): videos.append(file)
+                        
+                        # File is audio
+                        elif (content_type == 'audio'): music.append(file)
+
+                        # Other types of file
+                        else: docs.append(file)
+
+        return photos, videos, music, docs
 
 
 
     # Log out from Mail
     def logout(self):
-        self.mail.close()
         self.mail.logout()
 
 
 
 # eml = MailParser()
-# filename, msg_video = eml.get_msg_video()
-# if filename:
-#     with open(filename, 'wb') as mail_file:
-#         mail_file.write(msg_video)
+# eml.login()
+
+# photos, videos, music, docs = eml.get_mail_attaches()
+
+# eml.logout()
