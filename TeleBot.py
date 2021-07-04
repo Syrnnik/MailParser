@@ -27,14 +27,19 @@ def update_mail(msg):
     eml.login()
 
     while proc:
-        filename, msg_video = eml.get_msg_video()
+        photos, videos, music, docs = eml.get_mail_attaches()
 
-        if filename:
-            print(filename)
-            # with open(filename, 'wb') as mail_file:
-            #     mail_file.write(msg_video)
+        for photo in photos:
+            bot.send_photo(chat_id, photo, timeout=10000)
 
-            bot.send_video(chat_id, msg_video, timeout=10000)
+        for video in videos:
+            bot.send_video(chat_id, video, timeout=50000)
+
+        for mus in music:
+            bot.send_audio(chat_id, mus, timeout=10000)
+
+        for doc in docs:
+            bot.send_document(chat_id, doc, timeout=50000)
 
         time.sleep(sleep_time)
 
