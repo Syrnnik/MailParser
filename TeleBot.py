@@ -221,5 +221,3 @@ def end_update(msg):
 
 
 bot.polling()
-
-# https://www.t.me/Syrn_Bot
